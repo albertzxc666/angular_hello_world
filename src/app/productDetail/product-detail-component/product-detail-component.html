@@ -5,6 +5,9 @@
   </div>
   
   <div class="product-detail__content">
+    <div class="product-detail__image">
+      <img [src]="product.image" [alt]="product.name">
+    </div>
     <div class="product-detail__info">
       <p class="product-detail__price">{{ product.price }} ₽</p>
       <p class="product-detail__description">{{ product.description }}</p>
