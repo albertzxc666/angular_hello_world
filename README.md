@@ -1,59 +1,96 @@
-# HelloWorld
+# Angular Hello World - Интернет-магазин Lunacy
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.1.
+Веб-приложение интернет-магазина игрового оборудования, построенное на Angular 20.
 
-## Development server
+## 🚀 Технологии
 
-To start a local development server, run:
+- **Angular 20.1.0** - основной фреймворк
+- **TypeScript 5.8.2** - язык программирования
+- **SCSS** - препроцессор стилей
+- **Angular Router** - маршрутизация
+- **RxJS** - реактивное программирование
 
-```bash
-ng serve
+## 📁 Структура проекта
+
+```
+src/app/
+├── header/                    # Компонент шапки сайта
+├── greeting/                  # Компонент приветствия
+├── productList/              # Список товаров
+├── productDetail/            # Детальная страница товара
+└── app.routes.ts            # Конфигурация маршрутов
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## 🛍️ Функциональность
 
-## Code scaffolding
+### Каталог товаров
+- Отображение списка игрового оборудования
+- Карточки товаров с изображениями и ценами
+- Навигация к детальным страницам
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### Детальная страница товара
+- Подробная информация о товаре
+- Описание и характеристики
+- Динамическая загрузка по ID
 
+### Товары в каталоге
+1. **Мышь Lunacy One** - 6,990 ₽
+2. **Наушники беспроводные Lunact Loud** - 11,990 ₽
+3. **Клавиатура Lunacy In Space** - 13,990 ₽
+4. **Коврик для мыши** - 1,990 ₽
+5. **Наушники проводные Dark Project x Lunacy Night** - 6,990 ₽
+
+## 🚀 Запуск проекта
+
+### Установка зависимостей
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
+### Запуск в режиме разработки
 ```bash
-ng generate --help
+npm start
+```
+Приложение будет доступно по адресу `http://localhost:4200`
+
+### Сборка для продакшена
+```bash
+npm run build
 ```
 
-## Building
-
-To build the project run:
-
+### Запуск тестов
 ```bash
-ng build
+npm test
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## 📱 Маршруты
 
-## Running unit tests
+- `/` - перенаправление на `/products`
+- `/products` - список всех товаров
+- `/products/:id` - детальная страница товара
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+## 🎨 Стилизация
 
-```bash
-ng test
-```
+Проект использует методологию БЭМ для организации CSS классов. Все стили написаны в SCSS файлах компонентов.
 
-## Running end-to-end tests
+## 📦 Зависимости
 
-For end-to-end (e2e) testing, run:
+### Основные зависимости
+- `@angular/common` - общие директивы Angular
+- `@angular/compiler` - компилятор Angular
+- `@angular/core` - ядро Angular
+- `@angular/forms` - работа с формами
+- `@angular/platform-browser` - платформа браузера
+- `@angular/router` - маршрутизация
+- `rxjs` - реактивное программирование
 
-```bash
-ng e2e
-```
+### Зависимости для разработки
+- `@angular/cli` - командная строка Angular
+- `@angular/compiler-cli` - компилятор TypeScript
+- `typescript` - компилятор TypeScript
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## 🔧 Конфигурация
 
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Проект настроен с использованием Angular CLI с поддержкой:
+- TypeScript компиляции
+- SCSS препроцессора
