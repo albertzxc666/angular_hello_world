@@ -1,0 +1,14 @@
+<div class="product-list">
+  <h2 class="product-list__title">Список товаров</h2>
+  <div class="product-list__items">
+    <div class="product-item" *ngFor="let product of products">
+      <div class="product-item__info">
+        <h3 class="product-item__name">{{ product.name }}</h3>
+        <p class="product-item__price">{{ product.price }} ₽</p>
+      </div>
+      <a routerLink="/products/{{ product.id }}" class="product-item__link">
+        Подробнее
+      </a>
+    </div>
+  </div>
+</div>

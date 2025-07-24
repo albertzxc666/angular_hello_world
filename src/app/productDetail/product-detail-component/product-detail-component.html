@@ -1,0 +1,18 @@
+<div class="product-detail" *ngIf="product">
+  <div class="product-detail__header">
+    <h2 class="product-detail__title">{{ product.name }}</h2>
+    <a routerLink="/products" class="product-detail__back">← Назад к списку</a>
+  </div>
+  
+  <div class="product-detail__content">
+    <div class="product-detail__info">
+      <p class="product-detail__price">{{ product.price }} ₽</p>
+      <p class="product-detail__description">{{ product.description }}</p>
+    </div>
+  </div>
+</div>
+
+<div class="product-detail__error" *ngIf="!product">
+  <h2>Товар не найден</h2>
+  <a routerLink="/products" class="product-detail__back">← Назад к списку</a>
+</div>
