@@ -7,7 +7,7 @@ import { ProductListComponent } from './productList/product-list-component/produ
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, GreetingComponent, ProductDetailComponent, ProductListComponent],
+  imports: [RouterOutlet, HeaderComponent, GreetingComponent ],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

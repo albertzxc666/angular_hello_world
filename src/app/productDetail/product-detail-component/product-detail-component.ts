@@ -1,19 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-product-detail-component',
-  imports: [RouterModule, CommonModule],
+  imports: [
+    RouterModule, 
+    CommonModule
+  ],
   templateUrl: './product-detail-component.html',
   styleUrl: './product-detail-component.scss'
 })
 export class ProductDetailComponent implements OnInit {
 
-  product: any;
-  id: number = 0;
+  public product: any;
+  private id: number = 0;
   
-  products = [
+  public products = [
     { id: 1, name: 'Мышь', price: 6990, description: 'Lunacy One - это флагманская игровая мышь, которая адаптируется специально под вас. Больше не нужно идти на компромиссы.', image: '/assets/img/mouse.webp' },
     { id: 2, name: 'Наушники беспроводные', price: 11990, description: 'Lunact Loud - это беспроводная гарнитура премиум-класса, разработанная для геймеров, которые привыкли к высочайшему комфорту и качественному звуку.', image: '/assets/img/headphones_wireless.webp' },
     { id: 3, name: 'Клавиатура', price: 13990, description: 'Lunacy In Space - это флагманская клавиатура премиального уровня, в которой продумана каждая мелкая деталь, чтобы игровые сессии даже самых требовательных пользователей проходили с максимальным комфортом. Клавиатура выполнена в формате 98%. Цифровой блок - есть, при этом устройство гораздо аккуратнее и компактнее полноразмерных конкурентов.', image: '/assets/img/keyboard.webp' },
@@ -21,9 +24,9 @@ export class ProductDetailComponent implements OnInit {
     { id: 5, name: 'Наушники проводные', price: 6990, description: 'Дарк Проджект х Lunacy Night - это проводная гарнитура премиум-класса совмещающая в себе лаконичный дизайн и дерзкий, мощный звук.', image: '/assets/img/headphones.webp' }
   ];
 
-  constructor(private route: ActivatedRoute) {}
+  private route = inject(ActivatedRoute);
 
-  ngOnInit() {
+  public ngOnInit() {
     this.route.params
       .subscribe(params => {
         console.log(params);
