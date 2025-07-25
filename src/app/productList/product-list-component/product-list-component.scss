@@ -20,6 +20,37 @@
   }
 }
 
+// Планшеты
+@media (max-width: 768px) {
+  .product-list {
+    &__items {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      padding: 0 15px;
+    }
+  }
+}
+
+// Мобильные устройства
+@media (max-width: 480px) {
+  .product-list {
+    &__header {
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    
+    &__title {
+      font-size: 1.5rem;
+    }
+    
+    &__items {
+      grid-template-columns: 1fr;
+      gap: 15px;
+      padding: 0 15px;
+    }
+  }
+}
+
 .product-item {
   display: flex;
   flex-direction: column;
@@ -74,6 +105,52 @@
     
     &:hover {
       background-color: #333;
+    }
+  }
+}
+
+// Адаптивность для карточек товаров
+@media (max-width: 768px) {
+  .product-item {
+    padding: 15px;
+    
+    &__image img {
+      height: 250px;
+    }
+    
+    &__name {
+      font-size: 1.1rem;
+    }
+    
+    &__price {
+      font-size: 1rem;
+    }
+    
+    &__link {
+      padding: 10px 16px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .product-item {
+    padding: 12px;
+    
+    &__image img {
+      height: 200px;
+    }
+    
+    &__name {
+      font-size: 1rem;
+    }
+    
+    &__price {
+      font-size: 0.9rem;
+    }
+    
+    &__link {
+      padding: 8px 12px;
+      font-size: 0.9rem;
     }
   }
 }
