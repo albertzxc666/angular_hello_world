@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductService, Product } from '../../services/product.service';
@@ -11,10 +11,31 @@ import { ProductService, Product } from '../../services/product.service';
 })
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
+  isLoading: boolean = false;
+  error: string | null = null;
 
-  constructor(private productService: ProductService) {}
+  constructor(
+    private productService: ProductService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
-  ngOnInit(): void {
-    this.products = this.productService.getAllProducts();
+  async ngOnInit(): Promise<void> {
+    await this.loadProducts();
+  }
+
+  public async loadProducts(): Promise<void> {
+    this.isLoading = true;
+    this.error = null;
+    this.cdr.detectChanges();
+    
+    try {
+      this.products = await this.productService.getAllProducts();
+    } catch (error) {
+      this.error = 'Ошибка при загрузке товаров';
+      console.error('Error loading products:', error);
+    } finally {
+      this.isLoading = false;
+      this.cdr.detectChanges();
+    }
   }
 }

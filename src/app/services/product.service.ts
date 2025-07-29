@@ -22,11 +22,15 @@ export class ProductService {
 
   constructor() { }
 
-  getAllProducts(): Product[] {
+  async getAllProducts(): Promise<Product[]> {
+    // Имитация задержки сети
+    await new Promise(resolve => setTimeout(resolve, 800));
     return this.products;
   }
 
-  getProductById(id: number): Product | undefined {
+  async getProductById(id: number): Promise<Product | undefined> {
+    // Имитация задержки сети
+    await new Promise(resolve => setTimeout(resolve, 500));
     return this.products.find(product => product.id === id);
   }
 }

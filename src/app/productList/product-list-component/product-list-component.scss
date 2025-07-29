@@ -18,6 +18,67 @@
     gap: 20px;
     padding: 0 20px;
   }
+
+  &__loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    
+    p {
+      color: white;
+      font-size: 1.2rem;
+      margin-top: 20px;
+    }
+  }
+
+  &__error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+    
+    .error-message {
+      color: #ff6b6b;
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+  }
+}
+
+// Стили для спиннера загрузки
+.loading-spinner {
+  width: 50px;
+  height: 50px;
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid white;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+// Стили для кнопки повтора
+.retry-button {
+  padding: 12px 24px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  
+  &:hover {
+    background-color: #0056b3;
+  }
 }
 
 // Планшеты
@@ -47,6 +108,22 @@
       grid-template-columns: 1fr;
       gap: 15px;
       padding: 0 15px;
+    }
+
+    &__loading {
+      padding: 40px 15px;
+      
+      p {
+        font-size: 1rem;
+      }
+    }
+
+    &__error {
+      padding: 40px 15px;
+      
+      .error-message {
+        font-size: 1rem;
+      }
     }
   }
 }

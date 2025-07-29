@@ -2,7 +2,21 @@
   <div class="product-list__header">
     <h2 class="product-list__title">Список товаров</h2>
   </div>
-  <div class="product-list__items">
+  
+  <!-- Состояние загрузки -->
+  <div class="product-list__loading" *ngIf="isLoading">
+    <div class="loading-spinner"></div>
+    <p>Загрузка товаров...</p>
+  </div>
+
+  <!-- Состояние ошибки -->
+  <div class="product-list__error" *ngIf="error && !isLoading">
+    <p class="error-message">{{ error }}</p>
+    <button class="retry-button" (click)="loadProducts()">Попробовать снова</button>
+  </div>
+
+  <!-- Список товаров -->
+  <div class="product-list__items" *ngIf="!isLoading && !error">
     <div class="product-item" *ngFor="let product of products">
       <div class="product-item__image">
         <img [src]="product.image" [alt]="product.name">

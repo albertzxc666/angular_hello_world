@@ -1,4 +1,19 @@
-<div class="product-detail" *ngIf="product">
+<!-- Состояние загрузки -->
+<div class="product-detail__loading" *ngIf="isLoading">
+  <div class="loading-spinner"></div>
+  <p>Загрузка товара...</p>
+</div>
+
+<!-- Состояние ошибки -->
+<div class="product-detail__error" *ngIf="error && !isLoading">
+  <h2>Ошибка</h2>
+  <p class="error-message">{{ error }}</p>
+  <button class="retry-button" (click)="loadProduct()">Попробовать снова</button>
+  <a routerLink="/products" class="product-detail__back">← Назад к списку</a>
+</div>
+
+<!-- Информация о товаре -->
+<div class="product-detail" *ngIf="product && !isLoading && !error">
   <div class="product-detail__header">
     <h2 class="product-detail__title">{{ product.name }}</h2>
     <a routerLink="/products" class="product-detail__back">← Назад к списку</a>
@@ -15,7 +30,8 @@
   </div>
 </div>
 
-<div class="product-detail__error" *ngIf="!product">
+<!-- Товар не найден -->
+<div class="product-detail__error" *ngIf="!product && !isLoading && !error">
   <h2>Товар не найден</h2>
   <a routerLink="/products" class="product-detail__back">← Назад к списку</a>
 </div>
