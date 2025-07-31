@@ -26,7 +26,7 @@ export class ProductDetailComponent implements OnInit {
   public ngOnInit() {
     this.route.params
       .subscribe(params => {
-        this.id = params['id'];
+        this.id = +params['id']; // Преобразуем в число
         this.loadProduct();
       });
   }
@@ -39,6 +39,7 @@ export class ProductDetailComponent implements OnInit {
     
     try {
       this.product = await this.productService.getProductById(this.id);
+      
       if (!this.product) {
         this.error = 'Товар не найден';
       }
