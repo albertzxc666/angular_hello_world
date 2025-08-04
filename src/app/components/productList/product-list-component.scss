@@ -165,10 +165,17 @@
   }
   
   &__price {
-    margin: 0;
+    margin: 0 0 8px 0;
     font-weight: bold;
     color: black;
     font-size: 1.1rem;
+  }
+
+  &__category {
+    margin: 0 0 15px 0;
+    color: #666;
+    font-size: 0.9rem;
+    text-transform: capitalize;
   }
   
   &__link {

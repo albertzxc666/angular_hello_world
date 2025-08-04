@@ -15,17 +15,21 @@
 <!-- Информация о товаре -->
 <div class="product-detail" *ngIf="product && !isLoading && !error">
   <div class="product-detail__header">
-    <h2 class="product-detail__title">{{ product.name }}</h2>
+    <h2 class="product-detail__title">{{ product.title }}</h2>
     <a routerLink="/products" class="product-detail__back">← Назад к списку</a>
   </div>
   
   <div class="product-detail__content">
     <div class="product-detail__image">
-      <img [src]="product.image" [alt]="product.name">
+      <img [src]="product.image" [alt]="product.title">
     </div>
     <div class="product-detail__info">
-      <p class="product-detail__price">{{ product.price }} ₽</p>
+      <p class="product-detail__category">{{ product.category }}</p>
+      <p class="product-detail__price">{{ product.price | currency:'USD' }}</p>
       <p class="product-detail__description">{{ product.description }}</p>
+      <div class="product-detail__rating" *ngIf="product.rating">
+        <p>Рейтинг: {{ product.rating.rate }}/5 ({{ product.rating.count }} отзывов)</p>
+      </div>
     </div>
   </div>
 </div>
