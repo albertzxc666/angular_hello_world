@@ -1,10 +1,11 @@
-import { Component, inject, OnInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/Product.model';
-import { Subscription } from 'rxjs';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy({ arrayName: 'subscriptions' })
 @Component({
   selector: 'app-product-detail-component',
   imports: [
@@ -14,13 +15,13 @@ import { Subscription } from 'rxjs';
   templateUrl: './product-detail-component.html',
   styleUrl: './product-detail-component.scss'
 })
-export class ProductDetailComponent implements OnInit, OnDestroy {
+export class ProductDetailComponent implements OnInit {
 
   public product: Product | undefined;
   public isLoading: boolean = false;
   public error: string | null = null;
   private id: number = 0;
-  private subscription: Subscription = new Subscription();
+  subscriptions: any[] = [];
 
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
@@ -28,14 +29,11 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
   public ngOnInit() {
     this.route.params
+      .pipe(untilDestroyed(this))
       .subscribe(params => {
         this.id = +params['id']; // Преобразуем в число
         this.loadProduct();
       });
-  }
-
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
   }
 
   public loadProduct(): void {
@@ -44,8 +42,9 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     this.product = undefined;
     this.cdr.detectChanges();
     
-    this.subscription.add(
-      this.productService.getProductById(this.id).subscribe({
+    this.productService.getProductById(this.id)
+      .pipe(untilDestroyed(this))
+      .subscribe({
         next: (product) => {
           this.product = product;
           this.isLoading = false;
@@ -57,7 +56,6 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
           console.error('Error loading product:', error);
           this.cdr.detectChanges();
         }
-      })
-    );
+      });
   }
 }
