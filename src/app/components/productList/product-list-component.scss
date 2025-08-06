@@ -11,6 +11,10 @@
     margin: 0;
     font-size: 2rem;
   }
+
+  &__search {
+    padding: 0 20px 30px;
+  }
   
   &__items {
     display: grid;
@@ -48,6 +52,116 @@
       margin-bottom: 20px;
     }
   }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+  }
+}
+
+// Стили для поиска
+.search-container {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.search-input {
+  width: 100%;
+  padding: 15px 50px 15px 50px;
+  border: 2px solid #ddd;
+  border-radius: 25px;
+  font-size: 1rem;
+  font-family: 'Minecraft', sans-serif;
+  background-color: white;
+  color: #333;
+  transition: border-color 0.3s, box-shadow 0.3s;
+  
+  &:focus {
+    outline: none;
+    border-color: #007bff;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+  }
+  
+  &.searching {
+    border-color: #ffc107;
+  }
+  
+  &::placeholder {
+    color: #999;
+    font-family: 'Minecraft', sans-serif;
+  }
+}
+
+.search-icon {
+  position: absolute;
+  left: 15px;
+  color: #666;
+  pointer-events: none;
+}
+
+.clear-search-btn {
+  position: absolute;
+  right: 15px;
+  background: none;
+  border: none;
+  color: #666;
+  font-size: 18px;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 50%;
+  transition: background-color 0.3s, color 0.3s;
+  
+  &:hover {
+    background-color: #f0f0f0;
+    color: #333;
+  }
+}
+
+.search-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 15px;
+  color: white;
+  font-size: 0.9rem;
+  
+  .search-spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-top: 2px solid white;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+  }
+}
+
+.search-results {
+  margin-top: 15px;
+  text-align: center;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.empty-state {
+  color: white;
+  text-align: center;
+  
+  p {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: #ccc;
+  }
 }
 
 // Стили для спиннера загрузки
@@ -84,6 +198,10 @@
 // Планшеты
 @media (max-width: 768px) {
   .product-list {
+    &__search {
+      padding: 0 15px 20px;
+    }
+    
     &__items {
       grid-template-columns: repeat(2, 1fr);
       gap: 15px;
@@ -102,6 +220,10 @@
     
     &__title {
       font-size: 1.5rem;
+    }
+
+    &__search {
+      padding: 0 15px 15px;
     }
     
     &__items {
@@ -125,6 +247,24 @@
         font-size: 1rem;
       }
     }
+
+    &__empty {
+      padding: 40px 15px;
+    }
+  }
+
+  .search-input {
+    padding: 12px 45px 12px 45px;
+    font-size: 0.9rem;
+  }
+
+  .search-icon {
+    left: 12px;
+  }
+
+  .clear-search-btn {
+    right: 12px;
+    font-size: 16px;
   }
 }
 

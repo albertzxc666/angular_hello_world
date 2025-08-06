@@ -8,42 +8,28 @@ import { Product } from '../models/Product.model';
   providedIn: 'root'
 })
 export class ProductService {
-  private apiUrl = 'https://fakestoreapi.com';
+  private apiUrl = 'http://localhost:3001';
 
   constructor(private http: HttpClient) { }
 
-  /**
-   * Получение всех товаров категории electronics
-   */
   public getAllProducts(): Observable<Product[]> {
-    return this.http.get<Product[]>(`${this.apiUrl}/products/category/electronics`).pipe(
+    return this.http.get<Product[]>(`${this.apiUrl}/products`).pipe(
       catchError(this.handleError)
     );
   }
 
-  /**
-   * Получение продукта по id
-   * 
-   * @param id 
-   * @returns 
-   */
   public getProductById(id: number): Observable<Product> {
     return this.http.get<Product>(`${this.apiUrl}/products/${id}`).pipe(
       catchError(this.handleError)
     );
   }
 
-  /**
-   * Обработка ошибок HTTP-запросов
-   */
   private handleError(error: HttpErrorResponse) {
     let errorMessage = 'Произошла ошибка при загрузке данных';
     
     if (error.error instanceof ErrorEvent) {
-      // Ошибка на стороне клиента
       errorMessage = `Ошибка: ${error.error.message}`;
     } else {
-      // Ошибка на стороне сервера
       errorMessage = `Код ошибки: ${error.status}\nСообщение: ${error.message}`;
     }
     

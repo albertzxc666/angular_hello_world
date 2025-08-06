@@ -25,7 +25,7 @@
     </div>
     <div class="product-detail__info">
       <p class="product-detail__category">{{ product.category }}</p>
-      <p class="product-detail__price">{{ product.price | currency:'USD' }}</p>
+      <p class="product-detail__price">{{ product.price | currency:'RUB':'symbol-narrow':'1.0-0' }}</p>
       <p class="product-detail__description">{{ product.description }}</p>
       <div class="product-detail__rating" *ngIf="product.rating">
         <p>Рейтинг: {{ product.rating.rate }}/5 ({{ product.rating.count }} отзывов)</p>
