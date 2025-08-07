@@ -10,5 +10,5 @@ import { GreetingComponent } from './components/greeting/greeting-component';
   styleUrl: './app.scss'
 })
 export class App {
-  protected readonly title = signal('hello-world');
+  public readonly title = signal('hello-world');
 }

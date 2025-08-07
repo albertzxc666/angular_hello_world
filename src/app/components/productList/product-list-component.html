@@ -15,43 +15,13 @@
     <button class="retry-button" (click)="loadProducts()">Попробовать снова</button>
   </div>
 
-  <!-- Поиск товаров -->
-  <div class="product-list__search" *ngIf="!isLoading && !error">
-    <div class="search-container">
-      <div class="search-input-wrapper">
-        <input 
-          type="text" 
-          [formControl]="searchControl"
-          placeholder="Поиск товаров..."
-          class="search-input"
-          [class.searching]="isSearching">
-        <div class="search-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="11" cy="11" r="8"></circle>
-            <path d="m21 21-4.35-4.35"></path>
-          </svg>
-        </div>
-        <button 
-          *ngIf="searchControl.value" 
-          (click)="clearSearch()" 
-          class="clear-search-btn"
-          type="button">
-          ✕
-        </button>
-      </div>
-      
-      <!-- Индикатор поиска -->
-      <div class="search-loading" *ngIf="isSearching">
-        <div class="search-spinner"></div>
-        <span>Поиск...</span>
-      </div>
-      
-      <!-- Результаты поиска -->
-      <div class="search-results" *ngIf="searchControl.value && !isSearching">
-        <p>Найдено товаров: {{ filteredProducts.length }}</p>
-      </div>
-    </div>
-  </div>
+  <!-- Компонент поиска -->
+  <app-search-component 
+    *ngIf="!isLoading && !error"
+    (searchResults)="onSearchResults($event)"
+    (isSearchingChange)="onSearchingChange($event)"
+    (searchQueryChange)="onSearchQueryChange($event)">
+  </app-search-component>
 
   <!-- Список товаров -->
   <div class="product-list__items" *ngIf="!isLoading && !error">
@@ -71,9 +41,9 @@
   </div>
 
   <!-- Сообщение о пустом результате поиска -->
-  <div class="product-list__empty" *ngIf="!isLoading && !error && searchControl.value && filteredProducts.length === 0 && !isSearching">
+  <div class="product-list__empty" *ngIf="!isLoading && !error && searchComponent?.hasActiveSearch() && filteredProducts.length === 0 && !isSearching">
     <div class="empty-state">
-      <p>По запросу "{{ searchControl.value }}" ничего не найдено</p>
+      <p>По запросу "{{ searchComponent.getSearchValue() }}" ничего не найдено</p>
       <button class="retry-button" (click)="clearSearch()">Очистить поиск</button>
     </div>
   </div>

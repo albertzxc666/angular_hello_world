@@ -21,7 +21,7 @@ export class ProductDetailComponent implements OnInit {
   public isLoading: boolean = false;
   public error: string | null = null;
   private id: number = 0;
-  subscriptions: any[] = [];
+  public subscriptions: any[] = [];
 
   private route = inject(ActivatedRoute);
   private productService = inject(ProductService);
