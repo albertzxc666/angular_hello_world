@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../services/product.service';
@@ -23,10 +23,8 @@ export class ProductListComponent implements OnInit {
   public error: string | null = null;
   public subscriptions: any[] = [];
 
-  constructor(
-    private productService: ProductService,
-    private cdr: ChangeDetectorRef
-  ) {}
+  private productService = inject(ProductService);
+  private cdr = inject(ChangeDetectorRef);
 
   public ngOnInit(): void {
     this.loadProducts();
