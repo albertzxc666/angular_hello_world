@@ -18,8 +18,26 @@ export class ProductService {
     );
   }
 
-  public getProductById(id: number): Observable<Product> {
+  public getProductById(id: string): Observable<Product> {
     return this.http.get<Product>(`${this.apiUrl}/products/${id}`).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  public createProduct(product: Omit<Product, 'id'>): Observable<Product> {
+    return this.http.post<Product>(`${this.apiUrl}/products`, product).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  public updateProduct(id: string, product: Partial<Product>): Observable<Product> {
+    return this.http.put<Product>(`${this.apiUrl}/products/${id}`, product).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  public deleteProduct(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/products/${id}`).pipe(
       catchError(this.handleError)
     );
   }

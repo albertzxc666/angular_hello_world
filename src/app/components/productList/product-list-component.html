@@ -1,50 +1,89 @@
 <div class="product-list">
   <div class="product-list__header">
     <h2 class="product-list__title">Список товаров</h2>
+    <div class="product-list__actions">
+      <a routerLink="/products/new" class="btn btn--primary">
+        Добавить товар
+      </a>
+      <app-cart-icon></app-cart-icon>
+    </div>
   </div>
   
   <!-- Состояние загрузки -->
-  <div class="product-list__loading" *ngIf="isLoading">
-    <div class="loading-spinner"></div>
-    <p>Загрузка товаров...</p>
-  </div>
+  @if (isLoading) {
+    <div class="product-list__loading">
+      <div class="loading-spinner"></div>
+      <p>Загрузка товаров...</p>
+    </div>
+  }
 
   <!-- Состояние ошибки -->
-  <div class="product-list__error" *ngIf="error && !isLoading">
-    <p class="error-message">{{ error }}</p>
-    <button class="retry-button" (click)="loadProducts()">Попробовать снова</button>
-  </div>
+  @if (error && !isLoading) {
+    <div class="product-list__error">
+      <p class="error-message">{{ error }}</p>
+      <button class="retry-button" (click)="loadProducts()">Попробовать снова</button>
+    </div>
+  }
 
   <!-- Компонент поиска -->
-  <app-search-component 
-    *ngIf="!isLoading && !error"
-    (searchResults)="onSearchResults($event)"
-    (isSearchingChange)="onSearchingChange($event)"
-    (searchQueryChange)="onSearchQueryChange($event)">
-  </app-search-component>
+  @if (!isLoading && !error) {
+    <app-search-component 
+      (searchResults)="onSearchResults($event)"
+      (isSearchingChange)="onSearchingChange($event)"
+      (searchQueryChange)="onSearchQueryChange($event)">
+    </app-search-component>
+  }
 
   <!-- Список товаров -->
-  <div class="product-list__items" *ngIf="!isLoading && !error">
-    <div class="product-item" *ngFor="let product of filteredProducts">
-      <div class="product-item__image">
-        <img [src]="product.image" [alt]="product.title">
-      </div>
-      <div class="product-item__info">
-        <h3 class="product-item__name">{{ product.title }}</h3>
-        <p class="product-item__price">{{ product.price | currency:'RUB':'symbol-narrow':'1.0-0' }}</p>
-        <p class="product-item__category">{{ product.category }}</p>
-      </div>
-      <a routerLink="/products/{{ product.id }}" class="product-item__link">
-        Подробнее
-      </a>
+  @if (!isLoading && !error) {
+    <div class="product-list__items">
+      @for (product of filteredProducts; track product.id) {
+        <div class="product-item">
+          <div class="product-item__image">
+            <img 
+              [src]="product.image" 
+              [alt]="product.title"
+              (error)="onImageError($event)"
+              (load)="onImageLoad($event)"
+            >
+          </div>
+          <div class="product-item__info">
+            <h3 class="product-item__name">{{ product.title }}</h3>
+            <p class="product-item__price">{{ product.price | currency:'RUB':'symbol-narrow':'1.0-0' }}</p>
+            <p class="product-item__category">{{ product.category }}</p>
+          </div>
+          <div class="product-item__actions">
+            <a routerLink="/products/{{ product.id }}" class="product-item__link">
+              Подробнее
+            </a>
+            <button 
+              type="button" 
+              class="btn btn--primary btn--small"
+              (click)="onAddToCart(product)"
+            >
+              В корзину
+            </button>
+            <button 
+              type="button" 
+              class="btn btn--danger btn--small"
+              (click)="onDeleteProduct(product.id, product.title)"
+              [disabled]="deletingProductId === product.id"
+            >
+              {{ deletingProductId === product.id ? 'Удаление...' : 'Удалить' }}
+            </button>
+          </div>
+        </div>
+      }
     </div>
-  </div>
+  }
 
   <!-- Сообщение о пустом результате поиска -->
-  <div class="product-list__empty" *ngIf="!isLoading && !error && searchComponent?.hasActiveSearch() && filteredProducts.length === 0 && !isSearching">
-    <div class="empty-state">
-      <p>По запросу "{{ searchComponent.getSearchValue() }}" ничего не найдено</p>
-      <button class="retry-button" (click)="clearSearch()">Очистить поиск</button>
+  @if (!isLoading && !error && searchComponent.hasActiveSearch() && filteredProducts.length === 0 && !isSearching) {
+    <div class="product-list__empty">
+      <div class="empty-state">
+        <p>По запросу "{{ searchComponent.getSearchValue() }}" ничего не найдено</p>
+        <button class="retry-button" (click)="clearSearch()">Очистить поиск</button>
+      </div>
     </div>
-  </div>
+  }
 </div>

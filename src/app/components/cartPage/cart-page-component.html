@@ -1,0 +1,89 @@
+<div class="cart-page">
+  <div class="cart-page__header">
+    <h2 class="cart-page__title">Корзина</h2>
+    @if (isCartEmpty$ | async) {
+      <p class="cart-page__empty">Ваша корзина пуста</p>
+    }
+  </div>
+
+  @if (cartItems$ | async; as items) {
+    @if (items.length > 0) {
+      <div class="cart-page__content">
+        <div class="cart-items">
+          @for (item of items; track item.id) {
+            <div class="cart-item">
+              <div class="cart-item__image">
+                <img [src]="item.image" [alt]="item.title" (error)="onImageError($event)">
+              </div>
+              
+              <div class="cart-item__info">
+                <h3 class="cart-item__title">{{ item.title }}</h3>
+                <p class="cart-item__price">{{ item.price | currency:'RUB':'symbol':'1.2-2' }}</p>
+              </div>
+              
+              <div class="cart-item__quantity">
+                <label for="quantity-{{ item.id }}">Количество:</label>
+                <input 
+                  type="number" 
+                  id="quantity-{{ item.id }}"
+                  [value]="item.quantity"
+                  min="1"
+                  (change)="onUpdateQuantity(item.id, $any($event.target).valueAsNumber)"
+                  class="cart-item__quantity-input"
+                >
+              </div>
+              
+              <div class="cart-item__total">
+                <p>{{ (item.price * item.quantity) | currency:'RUB':'symbol':'1.2-2' }}</p>
+              </div>
+              
+              <div class="cart-item__actions">
+                <button 
+                  type="button"
+                  class="btn btn--danger btn--small"
+                  (click)="onRemoveItem(item.id)"
+                >
+                  Удалить
+                </button>
+              </div>
+            </div>
+          }
+        </div>
+        
+        <div class="cart-summary">
+          <div class="cart-summary__total">
+            <h3>Итого:</h3>
+            @if (cartTotal$ | async; as total) {
+              <p class="cart-summary__amount">{{ total | currency:'RUB':'symbol':'1.2-2' }}</p>
+            }
+          </div>
+          
+          <div class="cart-summary__actions">
+            <button 
+              type="button"
+              class="btn btn--secondary"
+              (click)="onClearCart()"
+            >
+              Очистить корзину
+            </button>
+            
+            <button 
+              type="button"
+              class="btn btn--primary"
+              (click)="onCheckout()"
+            >
+              Оформить заказ
+            </button>
+          </div>
+        </div>
+      </div>
+    } @else {
+      <div class="cart-page__empty-state">
+        <p>Ваша корзина пуста</p>
+        <a routerLink="/products" class="btn btn--primary">
+          Перейти к товарам
+        </a>
+      </div>
+    }
+  }
+</div>

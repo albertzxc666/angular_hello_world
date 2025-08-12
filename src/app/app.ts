@@ -1,14 +1,21 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { HeaderComponent } from './components/header/header-component';
-import { GreetingComponent } from './components/greeting/greeting-component';
+import { Store } from '@ngrx/store';
+import * as CartActions from './store/cart/cart.actions';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, HeaderComponent, GreetingComponent ],
+  standalone: true,
+  imports: [RouterOutlet, HeaderComponent],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })
-export class App {
-  public readonly title = signal('hello-world');
+export class AppComponent {
+  private readonly store = inject(Store);
+
+  constructor() {
+    // Загружаем корзину из localStorage при инициализации приложения
+    this.store.dispatch(CartActions.loadCart());
+  }
 }

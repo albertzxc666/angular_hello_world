@@ -13,24 +13,29 @@
           <path d="m21 21-4.35-4.35"></path>
         </svg>
       </div>
-      <button 
-        *ngIf="searchControl.value" 
-        (click)="clearSearch()" 
-        class="search__clear-btn"
-        type="button">
-        ✕
-      </button>
+      @if (searchControl.value) {
+        <button 
+          (click)="clearSearch()" 
+          class="search__clear-btn"
+          type="button">
+          ✕
+        </button>
+      }
     </div>
     
     <!-- Индикатор поиска -->
-    <div class="search__loading" *ngIf="isSearching">
-      <div class="search__spinner"></div>
-      <span>Поиск...</span>
-    </div>
+    @if (isSearching) {
+      <div class="search__loading">
+        <div class="search__spinner"></div>
+        <span>Поиск...</span>
+      </div>
+    }
     
     <!-- Результаты поиска -->
-    <div class="search__results" *ngIf="searchControl.value && !isSearching">
-      <p>Найдено товаров: {{ searchResultsCount }}</p>
-    </div>
+    @if (searchControl.value && !isSearching) {
+      <div class="search__results">
+        <p>Найдено товаров: {{ searchResultsCount }}</p>
+      </div>
+    }
   </div>
 </div> 

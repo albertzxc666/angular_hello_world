@@ -1,9 +1,12 @@
 import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/Product.model';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
+import { Store } from '@ngrx/store';
+import { CartItem } from '../../models/CartItem.model';
+import * as CartActions from '../../store/cart/cart.actions';
 
 @UntilDestroy({ arrayName: 'subscriptions' })
 @Component({
@@ -19,19 +22,24 @@ export class ProductDetailComponent implements OnInit {
 
   public product: Product | undefined;
   public isLoading: boolean = false;
+  public isDeleting: boolean = false;
   public error: string | null = null;
-  private id: number = 0;
+  private id: string = '';
   public subscriptions: any[] = [];
 
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private productService = inject(ProductService);
   private cdr = inject(ChangeDetectorRef);
+  private readonly store = inject(Store);
 
   public ngOnInit() {
     this.route.params
       .pipe(untilDestroyed(this))
       .subscribe(params => {
-        this.id = +params['id']; // Преобразуем в число
+        const idParam = params['id'];
+        this.id = idParam; // Используем ID как есть (строка или число)
+        
         this.loadProduct();
       });
   }
@@ -57,5 +65,58 @@ export class ProductDetailComponent implements OnInit {
           this.cdr.detectChanges();
         }
       });
+  }
+
+  public onDeleteProduct(): void {
+    if (!this.product || !confirm('Вы уверены, что хотите удалить этот товар?')) {
+      return;
+    }
+
+    this.isDeleting = true;
+    this.error = null;
+    this.cdr.detectChanges();
+
+    this.productService.deleteProduct(this.product.id).subscribe({
+      next: () => {
+        console.log('Товар удален:', this.product?.title);
+        this.isDeleting = false;
+        this.router.navigate(['/products']);
+      },
+      error: (error) => {
+        this.error = error.message || 'Ошибка при удалении товара';
+        this.isDeleting = false;
+        console.error('Ошибка удаления товара:', error);
+        this.cdr.detectChanges();
+              }
+      });
+  }
+
+  /**
+   * Обработка ошибки загрузки изображения
+   */
+  public onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+     // Используем существующее изображение как заглушку
+  }
+
+  /**
+   * Обработка успешной загрузки изображения
+   */
+  public onAddToCart(): void {
+    if (!this.product) return;
+    
+    const cartItem: CartItem = {
+      id: this.product.id,
+      title: this.product.title,
+      price: this.product.price,
+      image: this.product.image,
+      quantity: 1
+    };
+    
+    this.store.dispatch(CartActions.addToCart({ item: cartItem }));
+    alert('Товар добавлен в корзину!');
+  }
+  public onImageLoad(event: Event): void {
+    // Изображение загружено успешно
   }
 }

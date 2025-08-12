@@ -1,41 +1,76 @@
 <!-- Состояние загрузки -->
-<div class="product-detail__loading" *ngIf="isLoading">
-  <div class="loading-spinner"></div>
-  <p>Загрузка товара...</p>
-</div>
+@if (isLoading) {
+  <div class="product-detail__loading">
+    <div class="loading-spinner"></div>
+    <p>Загрузка товара...</p>
+  </div>
+}
 
 <!-- Состояние ошибки -->
-<div class="product-detail__error" *ngIf="error && !isLoading">
-  <h2>Ошибка</h2>
-  <p class="error-message">{{ error }}</p>
-  <button class="retry-button" (click)="loadProduct()">Попробовать снова</button>
-  <a routerLink="/products" class="product-detail__back">← Назад к списку</a>
-</div>
-
-<!-- Информация о товаре -->
-<div class="product-detail" *ngIf="product && !isLoading && !error">
-  <div class="product-detail__header">
-    <h2 class="product-detail__title">{{ product.title }}</h2>
+@if (error && !isLoading) {
+  <div class="product-detail__error">
+    <h2>Ошибка</h2>
+    <p class="error-message">{{ error }}</p>
+    <button class="retry-button" (click)="loadProduct()">Попробовать снова</button>
     <a routerLink="/products" class="product-detail__back">← Назад к списку</a>
   </div>
-  
-  <div class="product-detail__content">
-    <div class="product-detail__image">
-      <img [src]="product.image" [alt]="product.title">
+}
+
+<!-- Информация о товаре -->
+@if (product && !isLoading && !error) {
+  <div class="product-detail">
+    <div class="product-detail__header">
+      <h2 class="product-detail__title">{{ product.title }}</h2>
+      <div class="product-detail__actions">
+        <a [routerLink]="['/products', product.id, 'edit']" class="btn btn--secondary">
+          Редактировать
+        </a>
+        <button 
+          type="button" 
+          class="btn btn--danger"
+          (click)="onDeleteProduct()"
+          [disabled]="isDeleting"
+        >
+          {{ isDeleting ? 'Удаление...' : 'Удалить товар' }}
+        </button>
+        <button 
+          type="button"
+          class="btn btn--primary"
+          (click)="onAddToCart()"
+        >
+          Добавить в корзину
+        </button>
+        <a routerLink="/products" class="product-detail__back">← Назад к списку</a>
+      </div>
     </div>
-    <div class="product-detail__info">
-      <p class="product-detail__category">{{ product.category }}</p>
-      <p class="product-detail__price">{{ product.price | currency:'RUB':'symbol-narrow':'1.0-0' }}</p>
-      <p class="product-detail__description">{{ product.description }}</p>
-      <div class="product-detail__rating" *ngIf="product.rating">
-        <p>Рейтинг: {{ product.rating.rate }}/5 ({{ product.rating.count }} отзывов)</p>
+    
+    <div class="product-detail__content">
+      <div class="product-detail__image">
+        <img 
+          [src]="product.image" 
+          [alt]="product.title"
+          (error)="onImageError($event)"
+          (load)="onImageLoad($event)"
+        >
+      </div>
+      <div class="product-detail__info">
+        <p class="product-detail__category">{{ product.category }}</p>
+        <p class="product-detail__price">{{ product.price | currency:'RUB':'symbol-narrow':'1.0-0' }}</p>
+        <p class="product-detail__description">{{ product.description }}</p>
+        @if (product.rating) {
+          <div class="product-detail__rating">
+            <p>Рейтинг: {{ product.rating.rate }}/5 ({{ product.rating.count }} отзывов)</p>
+          </div>
+        }
       </div>
     </div>
   </div>
-</div>
+}
 
 <!-- Товар не найден -->
-<div class="product-detail__error" *ngIf="!product && !isLoading && !error">
-  <h2>Товар не найден</h2>
-  <a routerLink="/products" class="product-detail__back">← Назад к списку</a>
-</div>
+@if (!product && !isLoading && !error) {
+  <div class="product-detail__error">
+    <h2>Товар не найден</h2>
+    <a routerLink="/products" class="product-detail__back">← Назад к списку</a>
+  </div>
+}

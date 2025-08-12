@@ -1,15 +1,20 @@
 import { Component, OnInit, ChangeDetectorRef, ViewChild, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { filter, distinctUntilChanged } from 'rxjs/operators';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../models/Product.model';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SearchComponent } from '../search/search-component';
+import { CartIconComponent } from '../cartIcon/cart-icon-component';
+import { Store } from '@ngrx/store';
+import { CartItem } from '../../models/CartItem.model';
+import * as CartActions from '../../store/cart/cart.actions';
 
 @UntilDestroy({ arrayName: 'subscriptions' })
 @Component({
   selector: 'app-product-list-component',
-  imports: [RouterModule, CommonModule, SearchComponent],
+  imports: [RouterModule, CommonModule, SearchComponent, CartIconComponent],
   templateUrl: './product-list-component.html',
   styleUrl: './product-list-component.scss'
 })
@@ -21,13 +26,19 @@ export class ProductListComponent implements OnInit {
   public isLoading: boolean = false;
   public isSearching: boolean = false;
   public error: string | null = null;
+  public deletingProductId: string | null = null;
   public subscriptions: any[] = [];
 
   private productService = inject(ProductService);
   private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
+  private readonly store = inject(Store);
 
   public ngOnInit(): void {
     this.loadProducts();
+    this.setupNavigationListener();
+    this.setupQueryParamsListener();
   }
 
   /**
@@ -100,8 +111,97 @@ export class ProductListComponent implements OnInit {
    * Очистка поиска
    */
   public clearSearch(): void {
-    if (this.searchComponent) {
+    if (this.searchComponent?.clearSearch) {
       this.searchComponent.clearSearch();
     }
+  }
+
+  /**
+   * Удаление товара
+   */
+  public onDeleteProduct(productId: string, productTitle: string): void {
+    if (!confirm(`Вы уверены, что хотите удалить товар "${productTitle}"?`)) {
+      return;
+    }
+
+    this.deletingProductId = productId;
+    this.error = null;
+
+    this.productService.deleteProduct(productId).subscribe({
+      next: () => {
+        console.log('Товар удален:', productTitle);
+        this.deletingProductId = null;
+        // Обновляем список товаров
+        this.loadProducts();
+      },
+      error: (error) => {
+        this.error = error.message || 'Ошибка при удалении товара';
+        this.deletingProductId = null;
+        console.error('Ошибка удаления товара:', error);
+      }
+    });
+  }
+
+  /**
+   * Настройка слушателя навигации для обновления списка при возврате
+   */
+  private setupNavigationListener(): void {
+    this.router.events
+      .pipe(
+        filter(event => event instanceof NavigationEnd),
+        untilDestroyed(this)
+      )
+      .subscribe((event: NavigationEnd) => {
+        // Обновляем список товаров при возврате на страницу продуктов
+        if (event.url === '/products') {
+          console.log('Обновляем список товаров после навигации');
+          this.loadProducts();
+        }
+      });
+  }
+
+  /**
+   * Настройка слушателя query параметров для принудительного обновления
+   */
+  private setupQueryParamsListener(): void {
+    this.route.queryParams
+      .pipe(
+        distinctUntilChanged(),
+        untilDestroyed(this)
+      )
+      .subscribe(params => {
+        if (params['refresh']) {
+          console.log('Принудительное обновление списка товаров');
+          this.loadProducts();
+        }
+      });
+  }
+
+  /**
+   * Обработка ошибки загрузки изображения
+   */
+  public onImageError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+     // Используем существующее изображение как заглушку
+  }
+
+  /**
+   * Обработка успешной загрузки изображения
+   */
+  public onImageLoad(event: Event): void {
+    // Изображение загружено успешно
+  }
+
+  public onAddToCart(product: Product): void {
+    const cartItem: CartItem = {
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.image,
+      quantity: 1
+    };
+    
+    this.store.dispatch(CartActions.addToCart({ item: cartItem }));
+    alert('Товар добавлен в корзину!');
   }
 }
