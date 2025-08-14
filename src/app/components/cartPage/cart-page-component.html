@@ -1,8 +1,8 @@
 <div class="cart-page">
   <div class="cart-page__header">
-    <h2 class="cart-page__title">Корзина</h2>
+    <h2 class="cart-page__title">{{ 'cart.title' | translate }}</h2>
     @if (isCartEmpty$ | async) {
-      <p class="cart-page__empty">Ваша корзина пуста</p>
+      <p class="cart-page__empty">{{ 'cart.empty' | translate }}</p>
     }
   </div>
 
@@ -18,11 +18,11 @@
               
               <div class="cart-item__info">
                 <h3 class="cart-item__title">{{ item.title }}</h3>
-                <p class="cart-item__price">{{ item.price | currency:'RUB':'symbol':'1.2-2' }}</p>
+                <p class="cart-item__price">{{ (item.price | currencyConvert).symbol }}{{ (item.price | currencyConvert).amount | number:'1.2-2' }}</p>
               </div>
               
               <div class="cart-item__quantity">
-                <label for="quantity-{{ item.id }}">Количество:</label>
+                <label for="quantity-{{ item.id }}">{{ 'cart.quantity' | translate }}</label>
                 <input 
                   type="number" 
                   id="quantity-{{ item.id }}"
@@ -34,7 +34,7 @@
               </div>
               
               <div class="cart-item__total">
-                <p>{{ (item.price * item.quantity) | currency:'RUB':'symbol':'1.2-2' }}</p>
+                <p>{{ ((item.price * item.quantity) | currencyConvert).symbol }}{{ ((item.price * item.quantity) | currencyConvert).amount | number:'1.2-2' }}</p>
               </div>
               
               <div class="cart-item__actions">
@@ -43,7 +43,7 @@
                   class="btn btn--danger btn--small"
                   (click)="onRemoveItem(item.id)"
                 >
-                  Удалить
+                  {{ 'cart.remove' | translate }}
                 </button>
               </div>
             </div>
@@ -52,9 +52,9 @@
         
         <div class="cart-summary">
           <div class="cart-summary__total">
-            <h3>Итого:</h3>
+            <h3>{{ 'cart.total' | translate }}</h3>
             @if (cartTotal$ | async; as total) {
-              <p class="cart-summary__amount">{{ total | currency:'RUB':'symbol':'1.2-2' }}</p>
+              <p class="cart-summary__amount">{{ (total | currencyConvert).symbol }}{{ (total | currencyConvert).amount | number:'1.2-2' }}</p>
             }
           </div>
           
@@ -64,7 +64,7 @@
               class="btn btn--secondary"
               (click)="onClearCart()"
             >
-              Очистить корзину
+              {{ 'cart.clear' | translate }}
             </button>
             
             <button 
@@ -72,16 +72,16 @@
               class="btn btn--primary"
               (click)="onCheckout()"
             >
-              Оформить заказ
+              {{ 'cart.checkout' | translate }}
             </button>
           </div>
         </div>
       </div>
     } @else {
       <div class="cart-page__empty-state">
-        <p>Ваша корзина пуста</p>
+        <p>{{ 'cart.emptyState' | translate }}</p>
         <a routerLink="/products" class="btn btn--primary">
-          Перейти к товарам
+          {{ 'cart.goToProducts' | translate }}
         </a>
       </div>
     }

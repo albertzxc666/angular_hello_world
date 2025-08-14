@@ -9,12 +9,14 @@ import {
   selectCartTotal, 
   selectIsCartEmpty 
 } from '../../store/cart/cart.selectors';
+import { TranslatePipe } from '../../pipes/translate.pipe';
+import { CurrencyConvertPipe } from '../../pipes/currency-convert.pipe';
 import * as CartActions from '../../store/cart/cart.actions';
 
 @Component({
   selector: 'app-cart-page',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, TranslatePipe, CurrencyConvertPipe],
   templateUrl: './cart-page-component.html',
   styleUrls: ['./cart-page-component.scss']
 })

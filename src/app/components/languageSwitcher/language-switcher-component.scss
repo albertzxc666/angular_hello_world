@@ -1,0 +1,39 @@
+.language-switcher {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  
+  &__button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: var(--light-color);
+    font-family: 'Minecraft', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    &--active {
+      background: var(--accent);
+      color: var(--dark-color);
+      font-weight: bold;
+    }
+  }
+  
+  &__flag {
+    font-size: 1.2rem;
+  }
+  
+  &__name {
+    font-weight: 500;
+  }
+}

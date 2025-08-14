@@ -1,9 +1,10 @@
 <div class="product-list">
   <div class="product-list__header">
-    <h2 class="product-list__title">Список товаров</h2>
+    <h2 class="product-list__title">{{ 'products.title' | translate }}</h2>
     <div class="product-list__actions">
+      <app-language-switcher></app-language-switcher>
       <a routerLink="/products/new" class="btn btn--primary">
-        Добавить товар
+        {{ 'products.add' | translate }}
       </a>
       <app-cart-icon></app-cart-icon>
     </div>
@@ -13,7 +14,7 @@
   @if (isLoading) {
     <div class="product-list__loading">
       <div class="loading-spinner"></div>
-      <p>Загрузка товаров...</p>
+      <p>{{ 'products.loading' | translate }}</p>
     </div>
   }
 
@@ -21,7 +22,7 @@
   @if (error && !isLoading) {
     <div class="product-list__error">
       <p class="error-message">{{ error }}</p>
-      <button class="retry-button" (click)="loadProducts()">Попробовать снова</button>
+      <button class="retry-button" (click)="loadProducts()">{{ 'products.retry' | translate }}</button>
     </div>
   }
 
@@ -38,41 +39,12 @@
   @if (!isLoading && !error) {
     <div class="product-list__items">
       @for (product of filteredProducts; track product.id) {
-        <div class="product-item">
-          <div class="product-item__image">
-            <img 
-              [src]="product.image" 
-              [alt]="product.title"
-              (error)="onImageError($event)"
-              (load)="onImageLoad($event)"
-            >
-          </div>
-          <div class="product-item__info">
-            <h3 class="product-item__name">{{ product.title }}</h3>
-            <p class="product-item__price">{{ product.price | currency:'RUB':'symbol-narrow':'1.0-0' }}</p>
-            <p class="product-item__category">{{ product.category }}</p>
-          </div>
-          <div class="product-item__actions">
-            <a routerLink="/products/{{ product.id }}" class="product-item__link">
-              Подробнее
-            </a>
-            <button 
-              type="button" 
-              class="btn btn--primary btn--small"
-              (click)="onAddToCart(product)"
-            >
-              В корзину
-            </button>
-            <button 
-              type="button" 
-              class="btn btn--danger btn--small"
-              (click)="onDeleteProduct(product.id, product.title)"
-              [disabled]="deletingProductId === product.id"
-            >
-              {{ deletingProductId === product.id ? 'Удаление...' : 'Удалить' }}
-            </button>
-          </div>
-        </div>
+        <app-product-item
+          [product]="product"
+          [deletingProductId]="deletingProductId"
+          (addToCart)="onAddToCart($event)"
+          (deleteProduct)="onDeleteProduct($event.productId, $event.productTitle)">
+        </app-product-item>
       }
     </div>
   }
@@ -81,8 +53,8 @@
   @if (!isLoading && !error && searchComponent.hasActiveSearch() && filteredProducts.length === 0 && !isSearching) {
     <div class="product-list__empty">
       <div class="empty-state">
-        <p>По запросу "{{ searchComponent.getSearchValue() }}" ничего не найдено</p>
-        <button class="retry-button" (click)="clearSearch()">Очистить поиск</button>
+        <p>{{ 'products.notFound' | translate: { query: searchComponent.getSearchValue() } }}</p>
+        <button class="retry-button" (click)="clearSearch()">{{ 'products.clearSearch' | translate }}</button>
       </div>
     </div>
   }

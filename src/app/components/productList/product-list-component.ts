@@ -7,6 +7,10 @@ import { Product } from '../../models/Product.model';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 import { SearchComponent } from '../search/search-component';
 import { CartIconComponent } from '../cartIcon/cart-icon-component';
+import { ProductItemComponent } from '../productItem/product-item-component';
+import { LanguageSwitcherComponent } from '../languageSwitcher/language-switcher-component';
+import { TranslatePipe } from '../../pipes/translate.pipe';
+import { LanguageService } from '../../services/language.service';
 import { Store } from '@ngrx/store';
 import { CartItem } from '../../models/CartItem.model';
 import * as CartActions from '../../store/cart/cart.actions';
@@ -14,7 +18,7 @@ import * as CartActions from '../../store/cart/cart.actions';
 @UntilDestroy({ arrayName: 'subscriptions' })
 @Component({
   selector: 'app-product-list-component',
-  imports: [RouterModule, CommonModule, SearchComponent, CartIconComponent],
+  imports: [RouterModule, CommonModule, SearchComponent, CartIconComponent, ProductItemComponent, LanguageSwitcherComponent, TranslatePipe],
   templateUrl: './product-list-component.html',
   styleUrl: './product-list-component.scss'
 })
@@ -34,11 +38,17 @@ export class ProductListComponent implements OnInit {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private readonly store = inject(Store);
+  private readonly languageService = inject(LanguageService);
 
   public ngOnInit(): void {
     this.loadProducts();
     this.setupNavigationListener();
     this.setupQueryParamsListener();
+    
+    // Подписываемся на изменения языка для обновления UI
+    this.languageService.getCurrentLanguage$().subscribe(() => {
+      this.cdr.detectChanges();
+    });
   }
 
   /**
@@ -120,7 +130,8 @@ export class ProductListComponent implements OnInit {
    * Удаление товара
    */
   public onDeleteProduct(productId: string, productTitle: string): void {
-    if (!confirm(`Вы уверены, что хотите удалить товар "${productTitle}"?`)) {
+    const confirmMessage = this.languageService.translate('product.deleteConfirm', { title: productTitle });
+    if (!confirm(confirmMessage)) {
       return;
     }
 
@@ -177,20 +188,7 @@ export class ProductListComponent implements OnInit {
       });
   }
 
-  /**
-   * Обработка ошибки загрузки изображения
-   */
-  public onImageError(event: Event): void {
-    const img = event.target as HTMLImageElement;
-     // Используем существующее изображение как заглушку
-  }
 
-  /**
-   * Обработка успешной загрузки изображения
-   */
-  public onImageLoad(event: Event): void {
-    // Изображение загружено успешно
-  }
 
   public onAddToCart(product: Product): void {
     const cartItem: CartItem = {
@@ -202,6 +200,7 @@ export class ProductListComponent implements OnInit {
     };
     
     this.store.dispatch(CartActions.addToCart({ item: cartItem }));
-    alert('Товар добавлен в корзину!');
+    const message = this.languageService.translate('product.addedToCart');
+    alert(message);
   }
 }
