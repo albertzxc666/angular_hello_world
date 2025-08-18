@@ -8,24 +8,30 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.5rem 1rem;
-    background: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background: #666666; // Серый цвет для неактивной кнопки
+    border: 1px solid #777777;
     border-radius: 6px;
-    color: var(--light-color);
+    color: #cccccc; // Светло-серый текст для неактивной кнопки
     font-family: 'Minecraft', sans-serif;
     font-size: 0.9rem;
     cursor: pointer;
     transition: all 0.3s ease;
     
     &:hover {
-      background: rgba(255, 255, 255, 0.2);
+      background: #777777; // Чуть светлее при наведении
       transform: translateY(-2px);
     }
     
     &--active {
-      background: var(--accent);
-      color: var(--dark-color);
+      background: #ffffff; // Белый цвет для активной кнопки
+      color: #000000; // Черный текст для активной кнопки
       font-weight: bold;
+      border: 1px solid #e0e0e0;
+      
+      &:hover {
+        background: #f5f5f5; // Светло-серый при наведении на активную кнопку
+        transform: translateY(-2px);
+      }
     }
   }
   

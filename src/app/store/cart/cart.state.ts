@@ -1,14 +1,5 @@
-import { CartItem } from '../../models/CartItem.model';
+import { CartState, initialCartState } from '../../models/CartState.model';
 
-export interface CartState {
-  items: CartItem[];
-  loading: boolean;
-  error: string | null;
-}
-
-export const initialState: CartState = {
-  items: [],
-  loading: false,
-  error: null
-};
+export type { CartState };
+export const initialState = initialCartState;
 

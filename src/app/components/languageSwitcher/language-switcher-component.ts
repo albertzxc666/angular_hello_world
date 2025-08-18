@@ -1,7 +1,10 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { LanguageService, Language } from '../../services/language.service';
+import { LanguageService } from '../../services/language.service';
+import { Language } from '../../models/Language.model';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Component({
   selector: 'app-language-switcher',
   standalone: true,
@@ -9,11 +12,22 @@ import { LanguageService, Language } from '../../services/language.service';
   templateUrl: './language-switcher-component.html',
   styleUrls: ['./language-switcher-component.scss']
 })
-export class LanguageSwitcherComponent {
+export class LanguageSwitcherComponent implements OnInit {
   private readonly languageService = inject(LanguageService);
+  private readonly cdr = inject(ChangeDetectorRef);
   
   public readonly availableLanguages = this.languageService.availableLanguages;
-  public readonly currentLanguage$ = this.languageService.getCurrentLanguage$();
+  public currentLanguage = this.languageService.getCurrentLanguage(); // Обычное свойство вместо Observable
+
+  ngOnInit(): void {
+    // Подписываемся на изменения языка для принудительного обновления UI
+    this.languageService.getCurrentLanguage$()
+      .pipe(untilDestroyed(this))
+      .subscribe((newLanguage) => {
+        this.currentLanguage = newLanguage; // Обновляем свойство
+        this.cdr.detectChanges(); // Принудительное обновление UI
+      });
+  }
 
   public onLanguageChange(language: Language): void {
     this.languageService.setLanguage(language.code);

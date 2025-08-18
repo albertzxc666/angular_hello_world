@@ -1,7 +1,9 @@
 import { Pipe, PipeTransform, inject, ChangeDetectorRef, OnDestroy } from '@angular/core';
-import { LanguageService, TranslationParams } from '../services/language.service';
-import { Subscription } from 'rxjs';
+import { LanguageService } from '../services/language.service';
+import { TranslationParams } from '../models/Translation.model';
+import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 
+@UntilDestroy()
 @Pipe({
   name: 'translate',
   standalone: true,
@@ -10,33 +12,31 @@ import { Subscription } from 'rxjs';
 export class TranslatePipe implements PipeTransform, OnDestroy {
   private readonly languageService = inject(LanguageService);
   private readonly cdr = inject(ChangeDetectorRef);
-  private subscription?: Subscription;
+  private hasSubscription = false;
   private lastKey = '';
   private lastParams?: TranslationParams;
 
   transform(key: string, params?: TranslationParams): string {
-    // Если ключ или параметры изменились, обновляем подписку
-    if (this.lastKey !== key || JSON.stringify(this.lastParams) !== JSON.stringify(params)) {
+    // Если ключ или параметры изменились, или подписки еще нет, создаем подписку
+    if (!this.hasSubscription || this.lastKey !== key || JSON.stringify(this.lastParams) !== JSON.stringify(params)) {
       this.lastKey = key;
       this.lastParams = params;
       
-      // Отписываемся от предыдущей подписки
-      if (this.subscription) {
-        this.subscription.unsubscribe();
+      if (!this.hasSubscription) {
+        // Подписываемся на изменения языка
+        this.languageService.getCurrentLanguage$()
+          .pipe(untilDestroyed(this))
+          .subscribe(() => {
+            this.cdr.markForCheck();
+          });
+        this.hasSubscription = true;
       }
-      
-      // Подписываемся на изменения языка
-      this.subscription = this.languageService.getCurrentLanguage$().subscribe(() => {
-        this.cdr.markForCheck();
-      });
     }
     
     return this.languageService.translate(key, params);
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    // UntilDestroy автоматически отписывается
   }
 }

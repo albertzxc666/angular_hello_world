@@ -96,18 +96,20 @@ export class ProductDetailComponent implements OnInit {
     this.error = null;
     this.cdr.detectChanges();
 
-    this.productService.deleteProduct(this.product.id).subscribe({
-      next: () => {
-        console.log('Товар удален:', this.product?.title);
-        this.isDeleting = false;
-        this.router.navigate(['/products']);
-      },
-      error: (error) => {
-        this.error = error.message || 'Ошибка при удалении товара';
-        this.isDeleting = false;
-        console.error('Ошибка удаления товара:', error);
-        this.cdr.detectChanges();
-              }
+    this.productService.deleteProduct(this.product.id)
+      .pipe(untilDestroyed(this))
+      .subscribe({
+        next: () => {
+          console.log('Товар удален:', this.product?.title);
+          this.isDeleting = false;
+          this.router.navigate(['/products']);
+        },
+        error: (error) => {
+          this.error = error.message || 'Ошибка при удалении товара';
+          this.isDeleting = false;
+          console.error('Ошибка удаления товара:', error);
+          this.cdr.detectChanges();
+        }
       });
   }
 

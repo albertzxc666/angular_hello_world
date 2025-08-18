@@ -46,9 +46,11 @@ export class ProductListComponent implements OnInit {
     this.setupQueryParamsListener();
     
     // Подписываемся на изменения языка для обновления UI
-    this.languageService.getCurrentLanguage$().subscribe(() => {
-      this.cdr.detectChanges();
-    });
+    this.languageService.getCurrentLanguage$()
+      .pipe(untilDestroyed(this))
+      .subscribe(() => {
+        this.cdr.detectChanges();
+      });
   }
 
   /**
@@ -138,19 +140,21 @@ export class ProductListComponent implements OnInit {
     this.deletingProductId = productId;
     this.error = null;
 
-    this.productService.deleteProduct(productId).subscribe({
-      next: () => {
-        console.log('Товар удален:', productTitle);
-        this.deletingProductId = null;
-        // Обновляем список товаров
-        this.loadProducts();
-      },
-      error: (error) => {
-        this.error = error.message || 'Ошибка при удалении товара';
-        this.deletingProductId = null;
-        console.error('Ошибка удаления товара:', error);
-      }
-    });
+    this.productService.deleteProduct(productId)
+      .pipe(untilDestroyed(this))
+      .subscribe({
+        next: () => {
+          console.log('Товар удален:', productTitle);
+          this.deletingProductId = null;
+          // Обновляем список товаров
+          this.loadProducts();
+        },
+        error: (error) => {
+          this.error = error.message || 'Ошибка при удалении товара';
+          this.deletingProductId = null;
+          console.error('Ошибка удаления товара:', error);
+        }
+      });
   }
 
   /**
