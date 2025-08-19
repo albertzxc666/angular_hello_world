@@ -29,9 +29,11 @@
   <!-- Компонент поиска -->
   @if (!isLoading && !error) {
     <app-search-component 
+      [searchResultsCount]="searchResultsCount"
       (searchResults)="onSearchResults($event)"
       (isSearchingChange)="onSearchingChange($event)"
-      (searchQueryChange)="onSearchQueryChange($event)">
+      (searchQueryChange)="onSearchQueryChange($event)"
+      (searchResultsCountChange)="onSearchResultsCountChange($event)">
     </app-search-component>
   }
 
@@ -50,10 +52,10 @@
   }
 
   <!-- Сообщение о пустом результате поиска -->
-  @if (!isLoading && !error && searchComponent.hasActiveSearch() && filteredProducts.length === 0 && !isSearching) {
+  @if (!isLoading && !error && hasActiveSearch() && filteredProducts.length === 0 && !isSearching) {
     <div class="product-list__empty">
       <div class="empty-state">
-        <p>{{ 'products.notFound' | translate: { query: searchComponent.getSearchValue() } }}</p>
+        <p>{{ 'products.notFound' | translate: { query: getCurrentSearchQuery() } }}</p>
         <button class="retry-button" (click)="clearSearch()">{{ 'products.clearSearch' | translate }}</button>
       </div>
     </div>

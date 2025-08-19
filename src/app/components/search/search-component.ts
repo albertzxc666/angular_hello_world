@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -14,12 +14,13 @@ import { Product } from '../../models/Product.model';
   styleUrl: './search-component.scss'
 })
 export class SearchComponent implements OnInit {
+  @Input() searchResultsCount: number = 0; // Получаем счетчик от родителя
   @Output() searchResults = new EventEmitter<Product[]>();
   @Output() isSearchingChange = new EventEmitter<boolean>();
   @Output() searchQueryChange = new EventEmitter<string>();
+  @Output() searchResultsCountChange = new EventEmitter<number>();
 
   public isSearching: boolean = false;
-  public searchResultsCount: number = 0;
   public subscriptions: any[] = [];
   
   // FormControl для поиска
@@ -70,7 +71,6 @@ export class SearchComponent implements OnInit {
    */
   public filterProducts(products: Product[], query: string): Product[] {
     if (!query) {
-      this.searchResultsCount = products.length;
       return products; // Возвращаем все товары, если запрос пустой
     }
 
@@ -85,7 +85,6 @@ export class SearchComponent implements OnInit {
       return searchFields.some(field => field.includes(query));
     });
 
-    this.searchResultsCount = filteredProducts.length;
     return filteredProducts;
   }
 

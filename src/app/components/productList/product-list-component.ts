@@ -32,6 +32,8 @@ export class ProductListComponent implements OnInit {
   public error: string | null = null;
   public deletingProductId: string | null = null;
   public subscriptions: any[] = [];
+  public searchResultsCount: number = 0;
+  public currentSearchQuery: string = '';
 
   private productService = inject(ProductService);
   private cdr = inject(ChangeDetectorRef);
@@ -73,10 +75,42 @@ export class ProductListComponent implements OnInit {
    * Обработка изменения поискового запроса
    */
   public onSearchQueryChange(query: string): void {
-    // Выполняем поиск с текущими товарами
-    if (this.searchComponent) {
-      this.searchComponent.performSearch(this.products);
+    // Сохраняем текущий поисковый запрос
+    this.currentSearchQuery = query;
+    
+    // Выполняем поиск прямо здесь, без обращения к searchComponent
+    const filteredProducts = this.performProductSearch(this.products, query);
+    this.filteredProducts = filteredProducts;
+    this.searchResultsCount = filteredProducts.length;
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Выполнение поиска товаров
+   */
+  private performProductSearch(products: Product[], query: string): Product[] {
+    if (!query) {
+      return products; // Возвращаем все товары, если запрос пустой
     }
+
+    return products.filter(product => {
+      const searchFields = [
+        product.title.toLowerCase(),
+        product.description.toLowerCase(),
+        product.category.toLowerCase(),
+        product.price.toString()
+      ];
+
+      return searchFields.some(field => field.includes(query.toLowerCase()));
+    });
+  }
+
+  /**
+   * Обработка изменения счетчика результатов поиска
+   */
+  public onSearchResultsCountChange(count: number): void {
+    this.searchResultsCount = count;
+    this.cdr.detectChanges();
   }
 
   /**
@@ -102,6 +136,7 @@ export class ProductListComponent implements OnInit {
         next: (products) => {
           this.products = products;
           this.filteredProducts = products; // Инициализируем отфильтрованные товары
+          this.searchResultsCount = products.length; // Инициализируем счетчик
           this.isLoading = false;
           this.cdr.detectChanges();
           
@@ -126,6 +161,24 @@ export class ProductListComponent implements OnInit {
     if (this.searchComponent?.clearSearch) {
       this.searchComponent.clearSearch();
     }
+    this.currentSearchQuery = '';
+    this.filteredProducts = this.products;
+    this.searchResultsCount = this.products.length;
+    this.cdr.detectChanges();
+  }
+
+  /**
+   * Проверка, есть ли активный поиск
+   */
+  public hasActiveSearch(): boolean {
+    return !!this.currentSearchQuery;
+  }
+
+  /**
+   * Получение текущего поискового запроса
+   */
+  public getCurrentSearchQuery(): string {
+    return this.currentSearchQuery;
   }
 
   /**

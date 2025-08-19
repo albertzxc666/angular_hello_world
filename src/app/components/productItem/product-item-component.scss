@@ -6,7 +6,9 @@
   padding: 1.5rem;
   transition: all 0.3s ease;
   position: relative;
-  height: 600px; // Увеличиваем высоту карточек
+  min-height: 600px; // Минимальная высота вместо фиксированной
+  max-height: 600px; // Максимальная высота для предотвращения растягивания
+  height: auto; // Автоматическая высота
   display: flex;
   flex-direction: column;
   
@@ -17,10 +19,11 @@
   
   &__image {
     width: 100%;
-    height: 250px; // Увеличиваем высоту изображения
+    height: 200px; // Фиксированная высота изображения
     overflow: hidden;
     border-radius: 8px;
     margin-bottom: 1rem;
+    flex-shrink: 0; // Не сжимается
   }
   
   &__img {
@@ -39,6 +42,8 @@
     flex: 1; // Занимает доступное пространство
     display: flex;
     flex-direction: column;
+    overflow: hidden; // Скрываем переполнение
+    min-height: 0; // Позволяет flex-элементу сжиматься
   }
   
   &__name {
