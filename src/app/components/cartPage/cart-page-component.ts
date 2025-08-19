@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Store } from '@ngrx/store';
@@ -18,7 +18,8 @@ import * as CartActions from '../../store/cart/cart.actions';
   standalone: true,
   imports: [CommonModule, RouterModule, TranslatePipe, CurrencyConvertPipe],
   templateUrl: './cart-page-component.html',
-  styleUrls: ['./cart-page-component.scss']
+  styleUrls: ['./cart-page-component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class CartPageComponent {
   private readonly store = inject(Store);
@@ -43,6 +44,13 @@ export class CartPageComponent {
 
   public onCheckout(): void {
     alert('Функция оформления заказа будет реализована позже!');
+  }
+
+  /**
+   * TrackBy функция для оптимизации ngFor корзины
+   */
+  public trackByCartItemId(index: number, item: CartItem): string {
+    return item.id;
   }
 
   public onImageError(event: Event): void {

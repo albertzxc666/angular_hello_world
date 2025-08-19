@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LanguageService } from '../../services/language.service';
 import { Language } from '../../models/Language.model';
@@ -10,7 +10,8 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './language-switcher-component.html',
-  styleUrls: ['./language-switcher-component.scss']
+  styleUrls: ['./language-switcher-component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class LanguageSwitcherComponent implements OnInit {
   private readonly languageService = inject(LanguageService);

@@ -40,7 +40,7 @@
   <!-- Список товаров -->
   @if (!isLoading && !error) {
     <div class="product-list__items">
-      @for (product of filteredProducts; track product.id) {
+      @for (product of filteredProducts; track trackByProductId($index, product)) {
         <app-product-item
           [product]="product"
           [deletingProductId]="deletingProductId"

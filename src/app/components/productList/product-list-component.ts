@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, ViewChild, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter, distinctUntilChanged } from 'rxjs/operators';
@@ -20,7 +20,8 @@ import * as CartActions from '../../store/cart/cart.actions';
   selector: 'app-product-list-component',
   imports: [RouterModule, CommonModule, SearchComponent, CartIconComponent, ProductItemComponent, LanguageSwitcherComponent, TranslatePipe],
   templateUrl: './product-list-component.html',
-  styleUrl: './product-list-component.scss'
+  styleUrl: './product-list-component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductListComponent implements OnInit {
   @ViewChild(SearchComponent) searchComponent!: SearchComponent;
@@ -179,6 +180,13 @@ export class ProductListComponent implements OnInit {
    */
   public getCurrentSearchQuery(): string {
     return this.currentSearchQuery;
+  }
+
+  /**
+   * TrackBy функция для оптимизации ngFor
+   */
+  public trackByProductId(index: number, product: Product): string {
+    return product.id;
   }
 
   /**

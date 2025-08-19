@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, ChangeDetectorRef, inject, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormControl } from '@angular/forms';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -11,7 +11,8 @@ import { Product } from '../../models/Product.model';
   selector: 'app-search-component',
   imports: [CommonModule, ReactiveFormsModule],
   templateUrl: './search-component.html',
-  styleUrl: './search-component.scss'
+  styleUrl: './search-component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class SearchComponent implements OnInit {
   @Input() searchResultsCount: number = 0; // Получаем счетчик от родителя
@@ -62,7 +63,7 @@ export class SearchComponent implements OnInit {
       .subscribe(isSearching => {
         this.isSearching = isSearching;
         this.isSearchingChange.emit(isSearching);
-        this.cdr.detectChanges();
+        this.cdr.markForCheck(); // Используем markForCheck с OnPush
       });
   }
 

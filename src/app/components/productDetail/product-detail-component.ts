@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../services/product.service';
@@ -25,7 +25,8 @@ import * as CartActions from '../../store/cart/cart.actions';
     CurrencyConvertPipe
   ],
   templateUrl: './product-detail-component.html',
-  styleUrl: './product-detail-component.scss'
+  styleUrl: './product-detail-component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class ProductDetailComponent implements OnInit {
 

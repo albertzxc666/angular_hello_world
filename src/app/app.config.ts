@@ -1,4 +1,4 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZonelessChangeDetection, isDevMode } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideStore } from '@ngrx/store';
@@ -21,7 +21,7 @@ export const appConfig: ApplicationConfig = {
     provideEffects([CartEffects]),
     provideStoreDevtools({
       maxAge: 25,
-      logOnly: false,
+      logOnly: !isDevMode(), // Отключаем DevTools в production
       autoPause: true,
       trace: false,
       traceLimit: 75,
