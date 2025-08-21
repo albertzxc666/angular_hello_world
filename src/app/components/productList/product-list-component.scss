@@ -187,13 +187,28 @@
 // Планшеты
 @media (max-width: 768px) {
   .product-list {
-    
+    &__header {
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    &__actions {
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+    }
     
     &__items {
       grid-template-columns: repeat(2, 1fr);
       gap: 15px;
       padding: 0 15px;
     }
+  }
+
+  // Кнопки на планшетах
+  .btn {
+    width: 100%;
+    justify-content: center;
   }
 }
 
@@ -203,13 +218,21 @@
     &__header {
       padding: 15px;
       margin-bottom: 20px;
+      flex-direction: column;
+      gap: 15px;
     }
     
     &__title {
       font-size: 1.5rem;
+      order: 1;
     }
 
-
+    &__actions {
+      order: 2;
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
+    }
     
     &__items {
       grid-template-columns: 1fr;
@@ -238,7 +261,11 @@
     }
   }
 
-
+  // Кнопки на мобильных
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 // Стили для карточек товаров удалены, так как они теперь в product-item-component.scss

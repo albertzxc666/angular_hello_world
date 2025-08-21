@@ -219,10 +219,16 @@
     padding: 15px;
     
     &__header {
-      flex-direction: row;
-      align-items: center;
-      gap: 10px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 15px;
       margin-bottom: 15px;
+    }
+
+    &__actions {
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
     }
     
     &__content {
@@ -259,6 +265,12 @@
       }
     }
   }
+
+  // Кнопки на планшетах
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @media (max-width: 480px) {
@@ -268,10 +280,20 @@
     &__header {
       margin-bottom: 10px;
       padding-bottom: 10px;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 15px;
+    }
+
+    &__actions {
+      flex-direction: column;
+      width: 100%;
+      gap: 10px;
     }
     
     &__title {
       font-size: 1.2rem;
+      text-align: center;
     }
     
     &__content {
@@ -312,5 +334,11 @@
         font-size: 0.9rem;
       }
     }
+  }
+
+  // Кнопки на мобильных
+  .btn {
+    width: 100%;
+    justify-content: center;
   }
 }
