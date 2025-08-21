@@ -11,7 +11,7 @@ import { selectCartItemsCount } from '../../store/cart/cart.selectors';
   imports: [CommonModule, RouterModule],
   templateUrl: './cart-icon-component.html',
   styleUrls: ['./cart-icon-component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class CartIconComponent {
   private readonly store = inject(Store);

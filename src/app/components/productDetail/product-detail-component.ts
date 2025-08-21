@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { ActivatedRoute, RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { ProductService } from '../../services/product.service';
@@ -26,7 +26,7 @@ import * as CartActions from '../../store/cart/cart.actions';
   ],
   templateUrl: './product-detail-component.html',
   styleUrl: './product-detail-component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class ProductDetailComponent implements OnInit {
 
@@ -37,10 +37,9 @@ export class ProductDetailComponent implements OnInit {
   private id: string = '';
   public subscriptions: any[] = [];
 
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private productService = inject(ProductService);
-  private cdr = inject(ChangeDetectorRef);
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly productService = inject(ProductService);
   private readonly store = inject(Store);
   private readonly languageService = inject(LanguageService);
 
@@ -53,20 +52,12 @@ export class ProductDetailComponent implements OnInit {
         
         this.loadProduct();
       });
-    
-    // Подписываемся на изменения языка для обновления UI
-    this.languageService.getCurrentLanguage$()
-      .pipe(untilDestroyed(this))
-      .subscribe(() => {
-        this.cdr.detectChanges();
-      });
   }
 
   public loadProduct(): void {
     this.isLoading = true;
     this.error = null;
     this.product = undefined;
-    this.cdr.detectChanges();
     
     this.productService.getProductById(this.id)
       .pipe(untilDestroyed(this))
@@ -74,13 +65,11 @@ export class ProductDetailComponent implements OnInit {
         next: (product) => {
           this.product = product;
           this.isLoading = false;
-          this.cdr.detectChanges();
         },
         error: (error) => {
           this.error = error.message || 'Ошибка при загрузке товара';
           this.isLoading = false;
           console.error('Error loading product:', error);
-          this.cdr.detectChanges();
         }
       });
   }
@@ -95,7 +84,6 @@ export class ProductDetailComponent implements OnInit {
 
     this.isDeleting = true;
     this.error = null;
-    this.cdr.detectChanges();
 
     this.productService.deleteProduct(this.product.id)
       .pipe(untilDestroyed(this))
@@ -109,7 +97,6 @@ export class ProductDetailComponent implements OnInit {
           this.error = error.message || 'Ошибка при удалении товара';
           this.isDeleting = false;
           console.error('Ошибка удаления товара:', error);
-          this.cdr.detectChanges();
         }
       });
   }

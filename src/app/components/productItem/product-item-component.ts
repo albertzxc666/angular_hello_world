@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject, OnInit, ChangeDetectorRef, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, OnInit, OnDestroy, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Product } from '../../models/Product.model';
@@ -16,7 +16,7 @@ import { Subscription } from 'rxjs';
   imports: [CommonModule, RouterModule, TruncatePipe, TranslatePipe, CategoryTranslatePipe, DescriptionTranslatePipe, CurrencyConvertPipe],
   templateUrl: './product-item-component.html',
   styleUrls: ['./product-item-component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class ProductItemComponent implements OnInit, OnDestroy {
   @Input() product!: Product;
@@ -26,13 +26,12 @@ export class ProductItemComponent implements OnInit, OnDestroy {
   @Output() deleteProduct = new EventEmitter<{productId: string, productTitle: string}>();
 
   private readonly languageService = inject(LanguageService);
-  private readonly cdr = inject(ChangeDetectorRef);
   private languageSubscription?: Subscription;
 
   public ngOnInit(): void {
     // Подписываемся на изменения языка для обновления UI
     this.languageSubscription = this.languageService.getCurrentLanguage$().subscribe(() => {
-      this.cdr.markForCheck(); // Используем markForCheck с OnPush
+      // Теперь Angular автоматически обновит UI благодаря зоне
     });
   }
 

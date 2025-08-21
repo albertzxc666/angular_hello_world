@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, ViewChild, inject, ChangeDetectionStrategy } from '@angular/core';
+import { Component, OnInit, ViewChild, inject, ChangeDetectionStrategy } from '@angular/core';
 import { RouterModule, Router, NavigationEnd, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { filter, distinctUntilChanged } from 'rxjs/operators';
@@ -21,7 +21,7 @@ import * as CartActions from '../../store/cart/cart.actions';
   imports: [RouterModule, CommonModule, SearchComponent, CartIconComponent, ProductItemComponent, LanguageSwitcherComponent, TranslatePipe],
   templateUrl: './product-list-component.html',
   styleUrl: './product-list-component.scss',
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class ProductListComponent implements OnInit {
   @ViewChild(SearchComponent) searchComponent!: SearchComponent;
@@ -37,7 +37,6 @@ export class ProductListComponent implements OnInit {
   public currentSearchQuery: string = '';
 
   private productService = inject(ProductService);
-  private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private readonly store = inject(Store);
@@ -47,13 +46,6 @@ export class ProductListComponent implements OnInit {
     this.loadProducts();
     this.setupNavigationListener();
     this.setupQueryParamsListener();
-    
-    // Подписываемся на изменения языка для обновления UI
-    this.languageService.getCurrentLanguage$()
-      .pipe(untilDestroyed(this))
-      .subscribe(() => {
-        this.cdr.detectChanges();
-      });
   }
 
   /**
@@ -61,7 +53,6 @@ export class ProductListComponent implements OnInit {
    */
   public onSearchResults(filteredProducts: Product[]): void {
     this.filteredProducts = filteredProducts;
-    this.cdr.detectChanges();
   }
 
   /**
@@ -69,7 +60,6 @@ export class ProductListComponent implements OnInit {
    */
   public onSearchingChange(isSearching: boolean): void {
     this.isSearching = isSearching;
-    this.cdr.detectChanges();
   }
 
   /**
@@ -83,7 +73,6 @@ export class ProductListComponent implements OnInit {
     const filteredProducts = this.performProductSearch(this.products, query);
     this.filteredProducts = filteredProducts;
     this.searchResultsCount = filteredProducts.length;
-    this.cdr.detectChanges();
   }
 
   /**
@@ -111,7 +100,6 @@ export class ProductListComponent implements OnInit {
    */
   public onSearchResultsCountChange(count: number): void {
     this.searchResultsCount = count;
-    this.cdr.detectChanges();
   }
 
   /**
@@ -129,7 +117,6 @@ export class ProductListComponent implements OnInit {
   public loadProducts(): void {
     this.isLoading = true;
     this.error = null;
-    this.cdr.detectChanges();
     
     this.productService.getAllProducts()
       .pipe(untilDestroyed(this))
@@ -139,7 +126,6 @@ export class ProductListComponent implements OnInit {
           this.filteredProducts = products; // Инициализируем отфильтрованные товары
           this.searchResultsCount = products.length; // Инициализируем счетчик
           this.isLoading = false;
-          this.cdr.detectChanges();
           
           // Инициализируем поиск после загрузки товаров
           setTimeout(() => {
@@ -150,7 +136,6 @@ export class ProductListComponent implements OnInit {
           this.error = error.message || 'Ошибка при загрузке товаров';
           this.isLoading = false;
           console.error('Error loading products:', error);
-          this.cdr.detectChanges();
         }
       });
   }
@@ -165,7 +150,6 @@ export class ProductListComponent implements OnInit {
     this.currentSearchQuery = '';
     this.filteredProducts = this.products;
     this.searchResultsCount = this.products.length;
-    this.cdr.detectChanges();
   }
 
   /**
@@ -252,8 +236,6 @@ export class ProductListComponent implements OnInit {
         }
       });
   }
-
-
 
   public onAddToCart(product: Product): void {
     const cartItem: CartItem = {

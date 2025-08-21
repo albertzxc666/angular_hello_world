@@ -82,6 +82,9 @@
             ],
             "styles": [
               "src/styles.scss"
+            ],
+            "polyfills": [
+              "src/test-setup.ts"
             ]
           }
         }

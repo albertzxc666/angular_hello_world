@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, ChangeDetectorRef, ChangeDetectionStrategy } from '@angular/core';
+import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { LanguageService } from '../../services/language.service';
 import { Language } from '../../models/Language.model';
@@ -11,11 +11,10 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
   imports: [CommonModule],
   templateUrl: './language-switcher-component.html',
   styleUrls: ['./language-switcher-component.scss'],
-  changeDetection: ChangeDetectionStrategy.OnPush
+  changeDetection: ChangeDetectionStrategy.Default
 })
 export class LanguageSwitcherComponent implements OnInit {
   private readonly languageService = inject(LanguageService);
-  private readonly cdr = inject(ChangeDetectorRef);
   
   public readonly availableLanguages = this.languageService.availableLanguages;
   public currentLanguage = this.languageService.getCurrentLanguage(); // Обычное свойство вместо Observable
@@ -26,7 +25,6 @@ export class LanguageSwitcherComponent implements OnInit {
       .pipe(untilDestroyed(this))
       .subscribe((newLanguage) => {
         this.currentLanguage = newLanguage; // Обновляем свойство
-        this.cdr.detectChanges(); // Принудительное обновление UI
       });
   }
 

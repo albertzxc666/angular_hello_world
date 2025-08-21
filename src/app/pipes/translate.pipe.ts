@@ -1,4 +1,4 @@
-import { Pipe, PipeTransform, inject, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Pipe, PipeTransform, inject, OnDestroy } from '@angular/core';
 import { LanguageService } from '../services/language.service';
 import { TranslationParams } from '../models/Translation.model';
 import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
@@ -11,7 +11,6 @@ import { UntilDestroy, untilDestroyed } from '@ngneat/until-destroy';
 })
 export class TranslatePipe implements PipeTransform, OnDestroy {
   private readonly languageService = inject(LanguageService);
-  private readonly cdr = inject(ChangeDetectorRef);
   private hasSubscription = false;
   private lastKey = '';
   private lastParams?: TranslationParams;
@@ -27,7 +26,7 @@ export class TranslatePipe implements PipeTransform, OnDestroy {
         this.languageService.getCurrentLanguage$()
           .pipe(untilDestroyed(this))
           .subscribe(() => {
-            this.cdr.markForCheck();
+            // Теперь Angular автоматически обновит UI благодаря зоне
           });
         this.hasSubscription = true;
       }
