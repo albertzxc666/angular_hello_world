@@ -4,6 +4,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../models/Product.model';
 import { ProductService } from '../../services/product.service';
+import { VALIDATION_PATTERNS } from '../../consts/patterns.const';
+import { ERROR_MESSAGES } from '../../consts/error.const';
 
 @Component({
   selector: 'app-product-form',
@@ -23,6 +25,9 @@ export class ProductFormComponent implements OnInit {
   public productId: string | null = null;
   public isLoading = false;
   public error: string | null = null;
+  
+  // Константы для использования в шаблоне
+  public readonly ERROR_MESSAGES = ERROR_MESSAGES;
 
   ngOnInit(): void {
     this.initForm();
@@ -42,11 +47,11 @@ export class ProductFormComponent implements OnInit {
 
   private initForm(): void {
     this.productForm = this.fb.group({
-      title: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(100)]],
-      price: ['', [Validators.required, Validators.min(0.01), Validators.max(999999)]],
+      title: ['', [Validators.required, Validators.pattern(VALIDATION_PATTERNS.PRODUCT_TITLE)]],
+      price: ['', [Validators.required, Validators.pattern(VALIDATION_PATTERNS.PRICE)]],
       description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
-      image: ['', [Validators.pattern('^(/assets/img/.+|)$')]],
-      category: ['', [Validators.required]]
+      image: ['', [Validators.pattern(VALIDATION_PATTERNS.IMAGE_URL)]],
+      category: ['', [Validators.required, Validators.pattern(VALIDATION_PATTERNS.CATEGORY_NAME)]]
     });
   }
 
@@ -146,25 +151,33 @@ export class ProductFormComponent implements OnInit {
     
     if (control?.errors && control.touched) {
       if (control.errors['required']) {
-        if (controlName === 'category') {
-          return 'Пожалуйста, выберите категорию товара';
-        }
-        return 'Это поле обязательно для заполнения';
+        return ERROR_MESSAGES.REQUIRED_FIELD;
       }
       if (control.errors['minlength']) {
-        return `Минимальная длина: ${control.errors['minlength'].requiredLength} символов`;
+        return ERROR_MESSAGES.TEXT_TOO_SHORT + ': ' + control.errors['minlength'].requiredLength + ' символов';
       }
       if (control.errors['maxlength']) {
-        return `Максимальная длина: ${control.errors['maxlength'].requiredLength} символов`;
+        return ERROR_MESSAGES.TEXT_TOO_LONG + ': ' + control.errors['maxlength'].requiredLength + ' символов';
       }
       if (control.errors['min']) {
-        return `Минимальное значение: ${control.errors['min'].min}`;
+        return ERROR_MESSAGES.INVALID_NUMBER + ': минимум ' + control.errors['min'].min;
       }
       if (control.errors['max']) {
-        return `Максимальное значение: ${control.errors['max'].max}`;
+        return ERROR_MESSAGES.INVALID_NUMBER + ': максимум ' + control.errors['max'].max;
       }
       if (control.errors['pattern']) {
-        return 'Введите корректный локальный путь (начинается с /assets/img/) или оставьте поле пустым';
+        switch (controlName) {
+          case 'title':
+            return ERROR_MESSAGES.INVALID_TEXT + ': название товара';
+          case 'price':
+            return ERROR_MESSAGES.INVALID_PRICE;
+          case 'image':
+            return ERROR_MESSAGES.INVALID_URL + ': изображение';
+          case 'category':
+            return ERROR_MESSAGES.INVALID_NAME + ': категория';
+          default:
+            return ERROR_MESSAGES.VALIDATION_ERROR;
+        }
       }
     }
     

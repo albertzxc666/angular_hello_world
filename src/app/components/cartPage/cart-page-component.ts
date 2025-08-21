@@ -12,6 +12,7 @@ import {
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { CurrencyConvertPipe } from '../../pipes/currency-convert.pipe';
 import * as CartActions from '../../store/cart/cart.actions';
+import { DialogService } from '../../services/dialog.service';
 
 @Component({
   selector: 'app-cart-page',
@@ -23,6 +24,7 @@ import * as CartActions from '../../store/cart/cart.actions';
 })
 export class CartPageComponent {
   private readonly store = inject(Store);
+  private readonly dialogService = inject(DialogService);
   
   public cartItems$: Observable<CartItem[]> = this.store.select(selectCartItems);
   public cartTotal$: Observable<number> = this.store.select(selectCartTotal);
@@ -37,13 +39,16 @@ export class CartPageComponent {
   }
 
   public onClearCart(): void {
-    if (confirm('Вы уверены, что хотите очистить корзину?')) {
-      this.store.dispatch(CartActions.clearCart());
-    }
+    this.dialogService.showConfirm('Вы уверены, что хотите очистить корзину?', 'Подтверждение')
+      .subscribe(result => {
+        if (result) {
+          this.store.dispatch(CartActions.clearCart());
+        }
+      });
   }
 
   public onCheckout(): void {
-    alert('Функция оформления заказа будет реализована позже!');
+    this.dialogService.showInfo('Функция оформления заказа будет реализована позже!', 'Информация');
   }
 
   /**

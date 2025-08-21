@@ -1,9 +1,11 @@
-import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection, isDevMode } from '@angular/core';
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, provideZoneChangeDetection, isDevMode, importProvidersFrom } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideHttpClient, withFetch } from '@angular/common/http';
 import { provideStore } from '@ngrx/store';
 import { provideEffects } from '@ngrx/effects';
 import { provideStoreDevtools } from '@ngrx/store-devtools';
+import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { MaterialModule } from './modules/material/material-module';
 
 import { routes } from './app.routes';
 import { cartReducer } from './store/cart/cart.reducer';
@@ -15,6 +17,8 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection(),
     provideRouter(routes),
     provideHttpClient(withFetch()),
+    provideAnimationsAsync(), // Для Material анимаций
+    importProvidersFrom(MaterialModule), // Подключаем Material модуль
     provideStore({
       cart: cartReducer
     }),

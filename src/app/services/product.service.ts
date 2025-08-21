@@ -3,6 +3,7 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { Product } from '../models/Product.model';
+import { ERROR_MESSAGES } from '../consts/error.const';
 
 @Injectable({
   providedIn: 'root'
@@ -42,12 +43,12 @@ export class ProductService {
   }
 
   private handleError(error: HttpErrorResponse) {
-    let errorMessage = 'Произошла ошибка при загрузке данных';
+    let errorMessage = ERROR_MESSAGES.GENERAL_ERROR;
     
     if (error.error instanceof ErrorEvent) {
-      errorMessage = `Ошибка: ${error.error.message}`;
+      errorMessage = ERROR_MESSAGES.NETWORK_ERROR + ': ' + error.error.message;
     } else {
-      errorMessage = `Код ошибки: ${error.status}\nСообщение: ${error.message}`;
+      errorMessage = ERROR_MESSAGES.GENERAL_ERROR + '. Код ошибки: ' + error.status;
     }
     
     console.error('Ошибка HTTP запроса:', error);

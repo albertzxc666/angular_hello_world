@@ -27,15 +27,33 @@
     100% { left: 100%; }
 }
 
+.header__logo-link {
+    display: inline-block;
+    text-decoration: none;
+    transition: transform 0.3s ease;
+    cursor: pointer;
+    
+    &:hover {
+        transform: scale(1.1);
+    }
+    
+    &:focus {
+        outline: 2px solid white;
+        outline-offset: 4px;
+        border-radius: 4px;
+    }
+}
+
 .header__logo {
     height: 40px;
     width: auto;
     filter: drop-shadow(0 0 10px rgba(255,255,255,0.3));
-    transition: transform 0.3s ease;
-}
-
-.header__logo:hover {
-    transform: scale(1.1);
+    transition: filter 0.3s ease;
+    display: block;
+    
+    &:hover {
+        filter: drop-shadow(0 0 15px rgba(255,255,255,0.5));
+    }
 }
 
 // Адаптивность для хедера

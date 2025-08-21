@@ -11,9 +11,11 @@ import { ProductItemComponent } from '../productItem/product-item-component';
 import { LanguageSwitcherComponent } from '../languageSwitcher/language-switcher-component';
 import { TranslatePipe } from '../../pipes/translate.pipe';
 import { LanguageService } from '../../services/language.service';
+import { DialogService } from '../../services/dialog.service';
 import { Store } from '@ngrx/store';
 import { CartItem } from '../../models/CartItem.model';
 import * as CartActions from '../../store/cart/cart.actions';
+import { ERROR_MESSAGES } from '../../consts/error.const';
 
 @UntilDestroy({ arrayName: 'subscriptions' })
 @Component({
@@ -41,6 +43,7 @@ export class ProductListComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private readonly store = inject(Store);
   private readonly languageService = inject(LanguageService);
+  private readonly dialogService = inject(DialogService);
 
   public ngOnInit(): void {
     this.loadProducts();
@@ -133,7 +136,7 @@ export class ProductListComponent implements OnInit {
           }, 0);
         },
         error: (error) => {
-          this.error = error.message || 'Ошибка при загрузке товаров';
+          this.error = error.message || ERROR_MESSAGES.PRODUCTS_LOAD_ERROR;
           this.isLoading = false;
           console.error('Error loading products:', error);
         }
@@ -178,26 +181,27 @@ export class ProductListComponent implements OnInit {
    */
   public onDeleteProduct(productId: string, productTitle: string): void {
     const confirmMessage = this.languageService.translate('product.deleteConfirm', { title: productTitle });
-    if (!confirm(confirmMessage)) {
-      return;
-    }
+    this.dialogService.showConfirm(confirmMessage, 'Подтверждение удаления')
+      .subscribe(result => {
+        if (result) {
+          this.deletingProductId = productId;
+          this.error = null;
 
-    this.deletingProductId = productId;
-    this.error = null;
-
-    this.productService.deleteProduct(productId)
-      .pipe(untilDestroyed(this))
-      .subscribe({
-        next: () => {
-          console.log('Товар удален:', productTitle);
-          this.deletingProductId = null;
-          // Обновляем список товаров
-          this.loadProducts();
-        },
-        error: (error) => {
-          this.error = error.message || 'Ошибка при удалении товара';
-          this.deletingProductId = null;
-          console.error('Ошибка удаления товара:', error);
+          this.productService.deleteProduct(productId)
+            .pipe(untilDestroyed(this))
+            .subscribe({
+              next: () => {
+                console.log('Товар удален:', productTitle);
+                this.deletingProductId = null;
+                // Обновляем список товаров
+                this.loadProducts();
+              },
+              error: (error) => {
+                this.error = error.message || ERROR_MESSAGES.PRODUCT_DELETE_ERROR;
+                this.deletingProductId = null;
+                console.error('Ошибка удаления товара:', error);
+              }
+            });
         }
       });
   }
@@ -248,6 +252,6 @@ export class ProductListComponent implements OnInit {
     
     this.store.dispatch(CartActions.addToCart({ item: cartItem }));
     const message = this.languageService.translate('product.addedToCart');
-    alert(message);
+    this.dialogService.showSuccess(message);
   }
 }
