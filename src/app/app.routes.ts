@@ -10,5 +10,9 @@ export const routes: Routes = [
     path: 'cart', 
     loadChildren: () => import('./modules/cart/cart.routes').then(r => r.CART_ROUTES)
   },
+  { 
+    path: 'api-test', 
+    loadComponent: () => import('./components/api-test/api-test.component').then(c => c.ApiTestComponent)
+  },
   { path: '**', redirectTo: '/products' }
 ];
